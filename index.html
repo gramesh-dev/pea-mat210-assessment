@@ -18,9 +18,9 @@
   --text-primary: #2F2B25;
   --text-muted: #6F6A61;
   --text-faint: #9A9488;
-  --accent: #9D2235;
-  --accent-dark: #7A1A2A;
-  --accent-light: #F5E8EB;
+  --accent: #5A7080;
+  --accent-dark: #48606E;
+  --accent-light: #E8EEF2;
   --font-heading: 'DM Sans', sans-serif;
   --font-body: 'DM Sans', sans-serif;
 }
@@ -216,7 +216,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text-p
       onkeydown="if(event.key==='Enter')startAssessment()">
     <button class="welcome-btn" id="start-btn" onclick="startAssessment()">Begin</button>
     <div class="welcome-note">
-      Your conversation will be saved. When you're finished, download your transcript and submit it to Ms. Ramesh.
+      Your conversation will be saved. When you're finished, download your transcript and submit it to Dr. Ramesh.
     </div>
   </div>
 </div>
@@ -279,10 +279,10 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text-p
     <!-- CHAT -->
     <div class="chat-area">
       <div class="chat-msgs" id="chat-msgs">
-        <!-- Kelvi greeting injected on start -->
+        <!-- Thinking Partner greeting injected on start -->
       </div>
       <div class="typing" id="typing">
-        <div style="font-size:11px;font-weight:600;color:var(--accent);margin-bottom:3px">Kelvi</div>
+        <div style="font-size:11px;font-weight:600;color:var(--accent);margin-bottom:3px">Thinking Partner</div>
         <div class="typing-dots">
           <div class="typing-dot"></div>
           <div class="typing-dot"></div>
@@ -293,7 +293,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text-p
       <!-- INPUT -->
       <div class="input-bar">
         <div class="input-wrap">
-          <textarea class="chat-input" id="chat-input" rows="1" placeholder="Tell Kelvi what you tried..."
+          <textarea class="chat-input" id="chat-input" rows="1" placeholder="Tell the Thinking Partner what you tried..."
             onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
           <button class="eq-btn" onclick="openEq()" title="Insert equation">∑</button>
         </div>
@@ -397,7 +397,7 @@ function startAssessment() {
   document.getElementById('screen-welcome').classList.remove('active');
   document.getElementById('screen-assess').classList.add('active');
 
-  // Kelvi greeting
+  // Thinking Partner greeting
   addMessage('assistant', 'Hey ' + name.split(' ')[0] + '. Take a look at the problem above. Before we dig in — what did you try on your own, and where exactly did you get stuck?');
 }
 
@@ -408,7 +408,7 @@ function addMessage(role, text) {
   const div = document.createElement('div');
   div.className = 'msg ' + (isK ? 'msg-k' : 'msg-s');
   div.innerHTML =
-    '<div class="msg-name ' + (isK ? 'msg-name-k' : 'msg-name-s') + '">' + (isK ? 'Kelvi' : studentName.split(' ')[0]) + '</div>' +
+    '<div class="msg-name ' + (isK ? 'msg-name-k' : 'msg-name-s') + '">' + (isK ? 'Thinking Partner' : studentName.split(' ')[0]) + '</div>' +
     '<div class="msg-bubble ' + (isK ? 'msg-bubble-k' : 'msg-bubble-s') + '">' + escapeHtml(text) + '</div>';
   container.appendChild(div);
   // Render math in the new message
@@ -505,10 +505,7 @@ function toggleProblem() {
 function openEq() {
   document.getElementById('eq-overlay').classList.add('open');
   const field = document.getElementById('eq-field');
-  setTimeout(() => {
-    field.focus();
-    if (field.executeCommand) field.executeCommand('toggleVirtualKeyboard');
-  }, 100);
+  setTimeout(() => field.focus(), 100);
 }
 
 function closeEq() {
@@ -558,7 +555,7 @@ function downloadTranscript() {
   const allMsgs = [{ role: 'assistant', content: 'Hey ' + studentName.split(' ')[0] + '. Take a look at the problem above. Before we dig in — what did you try on your own, and where exactly did you get stuck?' }, ...msgs];
 
   allMsgs.forEach(m => {
-    const role = m.role === 'assistant' ? '[KELVI]' : '[' + studentName.toUpperCase() + ']';
+    const role = m.role === 'assistant' ? '[THINKING PARTNER]' : '[' + studentName.toUpperCase() + ']';
     lines.push(role);
     lines.push(typeof m.content === 'string' ? m.content : '[media]');
     lines.push('');
