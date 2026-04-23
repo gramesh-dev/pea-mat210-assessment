@@ -137,6 +137,21 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text-p
   transition: all 0.12s; font-family: serif;
 }
 .eq-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+.mic-btn {
+  width: 36px; height: 36px; border-radius: 8px; border: 1.5px solid var(--divider);
+  background: white; color: var(--text-muted); cursor: pointer;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  transition: all 0.12s;
+}
+.mic-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+.mic-btn.listening { background: var(--accent); color: white; border-color: var(--accent); }
+.speaker-btn {
+  width: 20px; height: 20px; border: none; background: none;
+  color: var(--accent); cursor: pointer; opacity: 0.6;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: opacity 0.12s; margin-left: 8px; vertical-align: middle;
+}
+.speaker-btn:hover { opacity: 1; }
 .send-btn {
   width: 36px; height: 36px; border-radius: 8px; border: none;
   background: var(--accent); color: white; cursor: pointer;
@@ -216,7 +231,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text-p
       onkeydown="if(event.key==='Enter')startAssessment()">
     <button class="welcome-btn" id="start-btn" onclick="startAssessment()">Begin</button>
     <div class="welcome-note">
-      Your conversation will be saved. When you're finished, download your transcript and submit it to Dr. Ramesh.
+      Your conversation will be saved. When you're finished, download your transcript and submit it to Ms. Ramesh.
     </div>
   </div>
 </div>
@@ -295,6 +310,14 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text-p
         <div class="input-wrap">
           <textarea class="chat-input" id="chat-input" rows="1" placeholder="Tell the Thinking Partner what you tried..."
             onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+          <button class="mic-btn" id="mic-btn" onclick="toggleDictation()" title="Dictate">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+              <line x1="12" y1="19" x2="12" y2="23"></line>
+              <line x1="8" y1="23" x2="16" y2="23"></line>
+            </svg>
+          </button>
           <button class="eq-btn" onclick="openEq()" title="Insert equation">∑</button>
         </div>
         <button class="send-btn" id="send-btn" onclick="sendMsg()" title="Send">
@@ -334,10 +357,10 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text-p
 const API_URL = '/api/chat';
 const MODEL = 'claude-sonnet-4-20250514';
 
-const SYSTEM_PROMPT = `You are a thinking partner for a student working on Mathematics 2 at Phillips Exeter Academy.
+const SYSTEM_PROMPT = `You are a thinking partner for a student working on a timed mathematics assessment at Phillips Exeter Academy.
 
-ABOUT THIS COURSE:
-This is a problem-centered curriculum — no chapters, no formulas handed to you. Every idea emerges from the problems. Your job is not to deliver mathematics. Your job is to help the student think.
+CONTEXT:
+This is a 10-minute problem-solving session. The student has already attempted the problem independently. Your role is to help them think through their reasoning, not to solve it for them.
 
 THE PROBLEM THE STUDENT IS WORKING ON:
 Alex the geologist is in the desert, 6 km from a long straight road. Alex's jeep travels at 48 kph on the road and 20 kph across the desert. There is a supply depot on the road, 16 km from the nearest point N on the road to Alex's position.
@@ -346,39 +369,36 @@ Alex the geologist is in the desert, 6 km from a long straight road. Alex's jeep
 3. Alex claims there is a value between 0 and 16 that gives a shorter total time. Without solving for the exact minimum, give a convincing mathematical argument that such a value must exist.
 4. Pose one meaningful follow-up question this problem makes you wonder about.
 
-YOUR ROLE:
-You are not a tutor. You are not a solution manual. You are a mathematical conversation partner — curious, patient, and genuinely interested in how this student is thinking.
-
 RULE 0 — ALWAYS ASK FIRST:
-When a student shares their attempt, engage with the SPECIFIC reasoning. Do NOT provide ANY mathematical content until the student has described their attempt.
+Your first response must ask: "What did you try on your own, and where exactly did you get stuck?"
 
-VERIFICATION CONFIRMATION — three tiers:
-TIER 1 — Student shows work but hasn't verified: Redirect to a SPECIFIC verification action.
-TIER 2 — Student has verified their own work: Acknowledge it. "Your reasoning holds up." Then offer a one-sentence takeaway.
-TIER 3 — Student asks "is that right?" without verification: Redirect to Tier 1.
+AFTER THAT — RESPONSIVE DIALOGUE:
+This is a conversation, not an interrogation. The student may:
+- Ask you questions (answer them, but don't give away the solution)
+- Share their reasoning (respond to what they said, don't just ask another question)
+- Request clarification on concepts (explain clearly and concisely)
+- Test an idea with you (give feedback on their thinking)
 
-COMPLEXITY GATE:
-Simple sub-problem + correct approach = ONE follow-up, then confirm and move on. Save deep scaffolding for the rich parts (sub-problems 3 and 4).
+WHAT TO DO:
+- Match your response to what the student just did
+- If they ask a question, answer it (without solving the problem for them)
+- If they share reasoning, respond to it (confirm, extend, or probe gently)
+- If they're stuck, offer a concrete next step to consider
+- Vary your response types: sometimes explain, sometimes ask, sometimes affirm
+- Keep responses concise (2-3 sentences max in most cases)
 
-NEW CONCEPTS:
-If the student hasn't encountered optimization or distance/rate/time setups before, provide a brief (2-sentence) conceptual frame, then return to questions.
+WHAT NOT TO DO:
+- Don't ask a question after every student response
+- Don't lead them through a predetermined sequence
+- Don't solve the problem or give the answer
+- Don't let wrong facts or logic errors pass uncorrected
+- Don't give up if they say "I don't know" — offer a concrete angle
 
-VOCABULARY:
-If a student asks what a term means, define it immediately in 1-2 sentences. Then return to scaffolding.
-
-WHAT YOU NEVER DO:
-- Never solve the problem for the student
-- Never give a complete worked solution
-- Never give a formula the student hasn't discovered
-- Never make a student feel their thinking was wrong
-- Never ask the same question twice in a conversation
-- Never ask a question whose answer is "because that's just what you do"
+TIME PRESSURE:
+Students have 10 minutes total. Be efficient. If they're spinning, give them a foothold. If they're moving forward, get out of the way.
 
 TONE:
-Warm, genuinely curious, unhurried. Keep responses SHORT — 2-3 sentences, then a question. Do not lecture.
-
-CLOSING:
-When done: "Before you write your final answer — close this window. What you write must come from your own thinking, not from our conversation."`;
+Direct, warm, efficient. Like a peer who knows math but respects their thinking.`;
 
 // ── STATE ──
 let studentName = '';
@@ -407,8 +427,13 @@ function addMessage(role, text) {
   const isK = role === 'assistant';
   const div = document.createElement('div');
   div.className = 'msg ' + (isK ? 'msg-k' : 'msg-s');
+  
+  const speakerBtn = isK ? '<button class="speaker-btn" onclick="speakText(\'' + text.replace(/'/g, "\\'") + '\')" title="Read aloud"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg></button>' : '';
+  
   div.innerHTML =
-    '<div class="msg-name ' + (isK ? 'msg-name-k' : 'msg-name-s') + '">' + (isK ? 'Thinking Partner' : studentName.split(' ')[0]) + '</div>' +
+    '<div class="msg-name ' + (isK ? 'msg-name-k' : 'msg-name-s') + '">' + 
+    (isK ? 'Thinking Partner' : studentName.split(' ')[0]) + speakerBtn +
+    '</div>' +
     '<div class="msg-bubble ' + (isK ? 'msg-bubble-k' : 'msg-bubble-s') + '">' + escapeHtml(text) + '</div>';
   container.appendChild(div);
   // Render math in the new message
@@ -574,6 +599,63 @@ function downloadTranscript() {
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
+}
+
+// ── VOICE FEATURES ──
+let recognition = null;
+let isListening = false;
+
+function toggleDictation() {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    alert('Speech recognition not supported in this browser. Try Chrome or Edge.');
+    return;
+  }
+  
+  if (isListening) {
+    if (recognition) recognition.stop();
+    return;
+  }
+  
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SpeechRecognition();
+  recognition.continuous = false;
+  recognition.interimResults = false;
+  recognition.lang = 'en-US';
+  
+  recognition.onstart = () => {
+    isListening = true;
+    document.getElementById('mic-btn').classList.add('listening');
+  };
+  
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    const input = document.getElementById('chat-input');
+    input.value = (input.value ? input.value + ' ' : '') + transcript;
+    autoResize(input);
+  };
+  
+  recognition.onerror = (event) => {
+    console.error('Speech recognition error:', event.error);
+    isListening = false;
+    document.getElementById('mic-btn').classList.remove('listening');
+  };
+  
+  recognition.onend = () => {
+    isListening = false;
+    document.getElementById('mic-btn').classList.remove('listening');
+  };
+  
+  recognition.start();
+}
+
+function speakText(text) {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 0.95;
+    utterance.pitch = 1.0;
+    window.speechSynthesis.speak(utterance);
+  }
 }
 </script>
 </body>
