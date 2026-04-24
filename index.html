@@ -3,133 +3,183 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PEA — MAT 210 Test 2</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<title>Mathematics Quiz · Phillips Exeter Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
-<script src="https://unpkg.com/mathlive@0.101.1/dist/mathlive.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script type="module" src="https://unpkg.com/mathlive"></script>
 <style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
-  --bg: #F8F7F4;
+  --accent: #9D2235;
+  --accent-dark: #7A1A2A;
+  --accent-light: #F5E8EB;
+  --bg: #F5F3EE;
   --surface: #ECE7DC;
-  --deeper: #E0D8C8;
+  --surface-deep: #E0D8C8;
   --divider: #CDC3B1;
   --text-primary: #2F2B25;
   --text-muted: #6F6A61;
-  --text-faint: #9A9488;
-  --accent: #5A7080;
-  --accent-dark: #48606E;
-  --accent-light: #E8EEF2;
-  --font-heading: 'DM Sans', sans-serif;
-  --font-body: 'DM Sans', sans-serif;
 }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: var(--font-body); background: var(--bg); color: var(--text-primary); min-height: 100vh; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+.screen { display: none; min-height: 100vh; }
+.screen.active { display: flex; flex-direction: column; }
+
+/* WELCOME */
+.welcome-screen {
+  display: flex;
+  flex: 1;
+  align-items: center; justify-content: center; padding: 2rem;
+}
+.welcome-box {
+  background: white; border-radius: 16px; padding: 3rem 2.5rem;
+  max-width: 480px; width: 100%; box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+.welcome-title {
+  font-family: 'DM Serif Display', serif; font-size: 32px;
+  margin-bottom: 0.5rem; color: var(--text-primary);
+  text-align: center;
+}
+.welcome-subtitle {
+  font-size: 15px; color: var(--text-muted); margin-bottom: 2rem;
+  text-align: center;
+}
+.name-input {
+  width: 100%; padding: 14px 16px; border-radius: 10px;
+  border: 1.5px solid var(--divider); font-size: 15px;
+  font-family: 'DM Sans', sans-serif; margin-bottom: 1rem;
+  transition: border-color 0.15s;
+}
+.name-input:focus {
+  outline: none; border-color: var(--accent);
+}
+.start-btn {
+  padding: 14px 32px; border-radius: 10px;
+  background: var(--accent); color: white; border: none;
+  font-size: 15px; font-weight: 600; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; transition: background 0.15s;
+  margin: 0 auto; display: block;
+}
+.start-btn:hover { background: var(--accent-dark); }
+
+/* QUIZ SCREEN */
+.quiz-screen { display: flex; flex-direction: column; height: 100vh; }
 
 /* TOPBAR */
 .topbar {
-  height: 52px; display: flex; align-items: center; justify-content: space-between;
-  padding: 0 24px; border-bottom: 1px solid var(--divider); background: var(--bg);
-  position: sticky; top: 0; z-index: 100;
+  background: white; border-bottom: 1px solid var(--divider);
+  padding: 16px 24px; display: flex; align-items: center; justify-content: space-between;
 }
-.topbar-brand { font-size: 16px; font-weight: 700; color: var(--accent); letter-spacing: 0.5px; }
-.topbar-right { font-size: 13px; color: var(--text-muted); display: flex; align-items: center; gap: 12px; }
-.topbar-name { font-weight: 600; color: var(--accent); }
-
-/* SCREENS */
-.screen { display: none; }
-.screen.active { display: flex; }
-
-/* WELCOME SCREEN */
-.welcome-screen {
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  min-height: calc(100vh - 52px); padding: 40px 20px; text-align: center; width: 100%;
+.topbar-left {
+  display: flex; align-items: center; gap: 16px;
 }
-.welcome-logo { font-size: 48px; font-weight: 700; letter-spacing: 2px; margin-bottom: 8px; }
-.welcome-sub { font-size: 15px; color: var(--text-muted); margin-bottom: 40px; }
-.welcome-label { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
-.welcome-input {
-  width: 100%; max-width: 320px; padding: 14px 18px; border: 1.5px solid var(--divider);
-  border-radius: 10px; font-size: 16px; font-family: var(--font-body); outline: none;
-  background: white; text-align: center; transition: border-color 0.15s;
+.topbar-school {
+  font-size: 13px; font-weight: 600; color: var(--text-muted);
+  letter-spacing: 0.02em;
 }
-.welcome-input:focus { border-color: var(--accent); }
-.welcome-btn {
-  margin-top: 16px; padding: 14px 48px; background: var(--accent); color: white;
-  border: none; border-radius: 10px; font-size: 16px; font-weight: 600;
-  font-family: var(--font-body); cursor: pointer; transition: background 0.15s;
+.topbar-title {
+  font-size: 13px; color: var(--text-muted);
 }
-.welcome-btn:hover { background: var(--accent-dark); }
-.welcome-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.welcome-note { font-size: 12px; color: var(--text-faint); margin-top: 20px; max-width: 360px; line-height: 1.5; }
+.topbar-name {
+  font-size: 13px; font-weight: 600; color: var(--accent);
+  display: none;
+}
 
-/* ASSESSMENT SCREEN */
-.assess-screen { flex-direction: column; height: calc(100vh - 52px); }
+/* CONTENT */
+.content-area {
+  flex: 1; display: flex; overflow: hidden;
+}
 
-/* PROBLEM PANEL */
-.problem-panel {
-  border-bottom: 1px solid var(--divider); padding: 20px 24px;
-  background: white; flex-shrink: 0; max-height: 45vh; overflow-y: auto;
+/* PROBLEM */
+.problem-area {
+  width: 45%; background: var(--surface); padding: 32px;
+  overflow-y: auto; border-right: 1px solid var(--divider);
+}
+.problem-header {
+  margin-bottom: 24px;
 }
 .problem-label {
-  font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
-  text-transform: uppercase; color: var(--accent); margin-bottom: 8px;
+  font-size: 11px; font-weight: 700; color: var(--accent);
+  text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px;
 }
-.problem-text { font-size: 14px; line-height: 1.7; color: var(--text-primary); }
-.problem-text p { margin-bottom: 10px; }
-.problem-text ol { padding-left: 20px; margin-bottom: 10px; }
-.problem-text ol li { margin-bottom: 8px; }
-.problem-diagram {
-  margin: 16px 0; padding: 16px; background: var(--bg); border-radius: 10px;
-  display: flex; justify-content: center;
+.problem-text {
+  font-size: 15px; line-height: 1.7; color: var(--text-primary);
 }
-.problem-toggle {
-  font-size: 12px; color: var(--accent); cursor: pointer; font-weight: 600;
-  margin-top: 8px; display: inline-block;
+.problem-text p {
+  margin-bottom: 1rem;
 }
-.problem-toggle:hover { text-decoration: underline; }
+.problem-text em {
+  font-style: italic;
+}
 
-/* CHAT AREA */
-.chat-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+/* CHAT */
+.chat-area {
+  flex: 1; display: flex; flex-direction: column; background: white;
+}
 .chat-msgs {
-  flex: 1; overflow-y: auto; padding: 20px 24px; display: flex;
-  flex-direction: column; gap: 12px;
+  flex: 1; overflow-y: auto; padding: 24px;
 }
-.msg { display: flex; flex-direction: column; max-width: 85%; animation: fadeUp 0.25s ease; }
-.msg-k { align-self: flex-start; }
-.msg-s { align-self: flex-end; }
-.msg-name { font-size: 11px; font-weight: 600; margin-bottom: 3px; letter-spacing: 0.03em; }
+.msg {
+  margin-bottom: 20px;
+}
+.msg-name {
+  font-size: 11px; font-weight: 600; margin-bottom: 4px;
+  display: flex; align-items: center;
+}
 .msg-name-k { color: var(--accent); }
-.msg-name-s { color: var(--text-muted); text-align: right; }
+.msg-name-s { color: var(--text-muted); }
 .msg-bubble {
-  padding: 12px 16px; border-radius: 12px; font-size: 14px; line-height: 1.65;
-  word-wrap: break-word;
+  padding: 12px 16px; border-radius: 12px; font-size: 14px; line-height: 1.6;
+  max-width: 85%; word-wrap: break-word;
 }
-.msg-bubble-k { background: var(--accent-light); color: var(--text-primary); border-bottom-left-radius: 4px; }
-.msg-bubble-s { background: white; border: 1px solid var(--divider); color: var(--text-primary); border-bottom-right-radius: 4px; }
-.typing { display: none; align-self: flex-start; }
-.typing.vis { display: flex; }
-.typing-dots { display: flex; gap: 4px; padding: 12px 16px; background: var(--accent-light); border-radius: 12px; border-bottom-left-radius: 4px; }
+.msg-bubble-k {
+  background: var(--accent-light); color: var(--text-primary);
+}
+.msg-bubble-s {
+  background: var(--surface); color: var(--text-primary);
+}
+.typing {
+  display: none; padding: 0 24px 12px;
+}
+.typing-dots {
+  display: flex; gap: 4px; padding: 12px 16px; background: var(--accent-light);
+  border-radius: 12px; width: fit-content;
+}
 .typing-dot {
   width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
-  opacity: 0.4; animation: blink 1.2s infinite;
+  animation: bounce 1.4s infinite;
 }
 .typing-dot:nth-child(2) { animation-delay: 0.2s; }
 .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-6px); }
+}
 
 /* INPUT BAR */
 .input-bar {
-  padding: 12px 20px; border-top: 1px solid var(--divider); background: white;
-  display: flex; align-items: flex-end; gap: 8px; flex-shrink: 0;
+  border-top: 1px solid var(--divider); padding: 16px 24px;
+  display: flex; gap: 12px; align-items: flex-end;
 }
-.input-wrap { flex: 1; display: flex; align-items: flex-end; gap: 6px; }
+.input-wrap {
+  flex: 1; background: var(--surface); border-radius: 12px;
+  padding: 10px 12px; display: flex; gap: 8px; align-items: center;
+}
 .chat-input {
-  flex: 1; padding: 10px 14px; border: 1.5px solid var(--divider); border-radius: 10px;
-  font-size: 14px; font-family: var(--font-body); outline: none; background: var(--bg);
-  resize: none; min-height: 40px; max-height: 120px; line-height: 1.5;
+  flex: 1; border: none; background: none; font-size: 14px;
+  font-family: 'DM Sans', sans-serif; color: var(--text-primary);
+  resize: none; max-height: 120px;
 }
-.chat-input:focus { border-color: var(--accent); }
+.chat-input:focus { outline: none; }
+.chat-input::placeholder { color: var(--text-muted); }
 .eq-btn {
   width: 36px; height: 36px; border-radius: 8px; border: 1.5px solid var(--divider);
   background: white; color: var(--text-muted); font-size: 16px; cursor: pointer;
@@ -153,182 +203,153 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text-p
 }
 .speaker-btn:hover { opacity: 1; }
 .send-btn {
-  width: 36px; height: 36px; border-radius: 8px; border: none;
+  width: 44px; height: 44px; border-radius: 10px; border: none;
   background: var(--accent); color: white; cursor: pointer;
-  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-  transition: background 0.12s;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s; flex-shrink: 0;
 }
 .send-btn:hover { background: var(--accent-dark); }
-.send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.send-btn:disabled { background: var(--divider); cursor: not-allowed; }
+
+/* NEXT/DOWNLOAD BAR */
+.action-bar {
+  border-top: 1px solid var(--divider); padding: 16px 24px;
+  background: var(--surface); display: flex; align-items: center; justify-content: space-between;
+}
+.action-note {
+  font-size: 12px; color: var(--text-muted);
+}
+.next-btn, .download-btn {
+  padding: 10px 20px; border-radius: 8px; border: none;
+  background: var(--accent); color: white; font-size: 13px;
+  font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif;
+  transition: background 0.15s;
+}
+.next-btn:hover, .download-btn:hover { background: var(--accent-dark); }
 
 /* EQUATION MODAL */
 .eq-overlay {
-  position: fixed; inset: 0; background: rgba(47,43,37,0.4); z-index: 200;
-  display: none; align-items: center; justify-content: center;
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.3); display: none; align-items: center;
+  justify-content: center; z-index: 1000;
 }
 .eq-overlay.open { display: flex; }
-.eq-modal { background: white; border-radius: 14px; width: 90%; max-width: 560px; overflow: hidden; }
+.eq-modal {
+  background: white; border-radius: 16px; width: 90%; max-width: 560px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+}
 .eq-header {
+  padding: 20px 24px; border-bottom: 1px solid var(--divider);
   display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 20px; border-bottom: 1px solid var(--divider);
 }
-.eq-header span { font-weight: 600; font-size: 15px; }
-.eq-close { background: none; border: none; font-size: 22px; color: var(--text-muted); cursor: pointer; }
-.eq-close:hover { color: var(--text-primary); }
-.eq-body { padding: 20px; }
-.eq-hint { font-size: 12px; color: var(--text-muted); margin-bottom: 12px; }
+.eq-header span { font-weight: 600; font-size: 16px; }
+.eq-close {
+  background: none; border: none; font-size: 24px; cursor: pointer;
+  color: var(--text-muted); line-height: 1;
+}
+.eq-body { padding: 24px; }
+.eq-hint {
+  font-size: 12px; color: var(--text-muted); margin-bottom: 12px;
+}
 .eq-field {
-  width: 100%; min-height: 70px; font-size: 20px; border: 2px solid var(--accent);
-  border-radius: 8px; padding: 12px 16px; --caret-color: var(--accent);
+  width: 100%; min-height: 60px; padding: 12px; border-radius: 8px;
+  border: 1.5px solid var(--divider); font-size: 18px;
 }
-.eq-footer { display: flex; justify-content: flex-end; gap: 8px; padding: 12px 20px; border-top: 1px solid var(--divider); }
-.eq-cancel { background: none; border: 1px solid var(--divider); padding: 8px 20px; border-radius: 8px; font-size: 14px; cursor: pointer; font-family: var(--font-body); color: var(--text-muted); }
-.eq-insert { background: var(--accent); color: white; border: none; padding: 8px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: var(--font-body); }
+.eq-footer {
+  padding: 16px 24px; border-top: 1px solid var(--divider);
+  display: flex; justify-content: flex-end; gap: 12px;
+}
+.eq-cancel, .eq-insert {
+  padding: 10px 20px; border-radius: 8px; font-size: 14px;
+  font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif;
+  border: none;
+}
+.eq-cancel {
+  background: var(--surface); color: var(--text-primary);
+}
+.eq-insert {
+  background: var(--accent); color: white;
+}
 .eq-insert:hover { background: var(--accent-dark); }
-
-/* DOWNLOAD BAR */
-.download-bar {
-  padding: 10px 20px; background: var(--surface); border-top: 1px solid var(--divider);
-  display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
-}
-.download-btn {
-  padding: 8px 20px; background: var(--text-primary); color: white; border: none;
-  border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;
-  font-family: var(--font-body); transition: opacity 0.12s;
-}
-.download-btn:hover { opacity: 0.85; }
-.download-note { font-size: 12px; color: var(--text-muted); }
-
-@keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes blink { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; } }
-
-/* RESPONSIVE */
-@media (max-width: 600px) {
-  .problem-panel { max-height: 35vh; padding: 16px; }
-  .chat-msgs { padding: 16px; }
-  .msg { max-width: 92%; }
-}
 </style>
 </head>
 <body>
 
-<!-- TOPBAR -->
-<div class="topbar">
-  <div class="topbar-brand">Phillips Exeter Academy</div>
-  <div class="topbar-right">
-    <span>MAT 210 · Test 2 · Part II</span>
-    <span class="topbar-name" id="topbar-name" style="display:none"></span>
-  </div>
-</div>
-
-<!-- SCREEN 1: WELCOME -->
+<!-- WELCOME SCREEN -->
 <div class="screen active" id="screen-welcome">
   <div class="welcome-screen">
-    <div class="welcome-logo" style="color:#9D2235">PEA</div>
-    <div class="welcome-sub">MAT 210 · AI Thinking Partner</div>
-    <div class="welcome-label">Enter your name</div>
-    <input class="welcome-input" id="name-input" type="text" placeholder="First and last name" autofocus
-      onkeydown="if(event.key==='Enter')startAssessment()">
-    <button class="welcome-btn" id="start-btn" onclick="startAssessment()">Begin</button>
-    <div class="welcome-note">
-      Your conversation will be saved. When you're finished, download your transcript and submit it to Ms. Ramesh.
+    <div class="welcome-box">
+      <div class="welcome-title">Mathematics Quiz</div>
+      <div class="welcome-subtitle">Phillips Exeter Academy · 3 Problems</div>
+      <input type="text" class="name-input" id="name-input" placeholder="Your full name" onkeydown="if(event.key==='Enter')startQuiz()">
+      <button class="start-btn" onclick="startQuiz()">Begin</button>
     </div>
   </div>
 </div>
 
-<!-- SCREEN 2: ASSESSMENT -->
-<div class="screen" id="screen-assess">
-  <div class="assess-screen">
-
-    <!-- PROBLEM -->
-    <div class="problem-panel" id="problem-panel">
-      <div class="problem-label">Part II · AI Thinking Partner</div>
-      <div class="problem-text">
-        <p><em>Alex the geologist is in the desert, 6 km from a long straight road. Alex's jeep travels at 48 kph on the road and 20 kph across the desert. There is a supply depot on the road, 16 km from the nearest point N on the road to Alex's position.</em></p>
-
-        <!-- DIAGRAM -->
-        <div class="problem-diagram">
-          <svg viewBox="0 0 600 200" width="100%" style="max-width:560px" xmlns="http://www.w3.org/2000/svg">
-            <!-- Road -->
-            <line x1="40" y1="80" x2="560" y2="80" stroke="#2F2B25" stroke-width="3"/>
-            <!-- Arrow on road -->
-            <polygon points="555,74 565,80 555,86" fill="#2F2B25"/>
-            <!-- N point -->
-            <circle cx="160" cy="80" r="5" fill="#2F2B25"/>
-            <text x="160" y="65" text-anchor="middle" font-family="DM Sans" font-size="14" font-weight="700" fill="#2F2B25">N</text>
-            <!-- Join point -->
-            <circle cx="340" cy="80" r="5" fill="#2F2B25"/>
-            <text x="340" y="65" text-anchor="middle" font-family="DM Sans" font-size="13" fill="#6F6A61">join point</text>
-            <!-- Depot -->
-            <circle cx="500" cy="80" r="5" fill="#2F2B25"/>
-            <text x="500" y="65" text-anchor="middle" font-family="DM Sans" font-size="14" font-weight="700" fill="#2F2B25">depot</text>
-            <text x="500" y="50" text-anchor="middle" font-family="DM Sans" font-size="11" fill="#6F6A61">16 km from N</text>
-            <!-- Road labels -->
-            <text x="555" y="100" font-family="DM Sans" font-size="11" fill="#6F6A61">road (48 kph)</text>
-            <!-- Dashed line N to Alex -->
-            <line x1="160" y1="80" x2="160" y2="170" stroke="#2F2B25" stroke-width="1.5" stroke-dasharray="5,4"/>
-            <!-- Right angle marker -->
-            <rect x="160" y="80" width="8" height="8" fill="none" stroke="#2F2B25" stroke-width="1"/>
-            <!-- 6 km label -->
-            <text x="140" y="132" text-anchor="middle" font-family="DM Sans" font-size="12" fill="#6F6A61">6 km</text>
-            <!-- Alex -->
-            <circle cx="160" cy="175" r="6" fill="#2F2B25"/>
-            <text x="175" y="180" font-family="DM Sans" font-size="14" font-weight="700" fill="#2F2B25">Alex</text>
-            <!-- Desert path -->
-            <line x1="160" y1="175" x2="340" y2="80" stroke="#2F2B25" stroke-width="2"/>
-            <!-- Desert label -->
-            <text x="60" y="180" font-family="DM Sans" font-size="11" fill="#6F6A61">desert (20 kph)</text>
-          </svg>
-        </div>
-
-        <ol>
-          <li>Let <em>x</em> be the distance (in km) along the road from N to the point where Alex joins the road. <strong>Write an expression</strong> for the total travel time, in hours. Include all terms; you do not need to simplify fully.</li>
-          <li>Compute the time if Alex drives straight to N then along the road and the time driving entirely through the desert to the depot.</li>
-          <li>Alex claims there is a value between 0 and 16 that gives a shorter total time. Without solving for the exact minimum, give a convincing mathematical argument that such a value must exist.</li>
-          <li>Pose one meaningful follow-up question this problem makes you wonder about.</li>
-        </ol>
+<!-- QUIZ SCREEN -->
+<div class="screen" id="screen-quiz">
+  <div class="quiz-screen">
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-school">Phillips Exeter Academy</div>
+        <div class="topbar-title">Mathematics Quiz</div>
       </div>
-      <span class="problem-toggle" onclick="toggleProblem()">▴ Hide problem</span>
+      <div class="topbar-name" id="topbar-name"></div>
     </div>
 
-    <!-- CHAT -->
-    <div class="chat-area">
-      <div class="chat-msgs" id="chat-msgs">
-        <!-- Thinking Partner greeting injected on start -->
-      </div>
-      <div class="typing" id="typing">
-        <div style="font-size:11px;font-weight:600;color:var(--accent);margin-bottom:3px">Thinking Partner</div>
-        <div class="typing-dots">
-          <div class="typing-dot"></div>
-          <div class="typing-dot"></div>
-          <div class="typing-dot"></div>
+    <!-- CONTENT -->
+    <div class="content-area">
+      <!-- PROBLEM -->
+      <div class="problem-area">
+        <div class="problem-header">
+          <div class="problem-label" id="problem-label">Problem 1 of 3</div>
+        </div>
+        <div class="problem-text" id="problem-text">
+          <!-- Problem injected here -->
         </div>
       </div>
 
-      <!-- INPUT -->
-      <div class="input-bar">
-        <div class="input-wrap">
-          <textarea class="chat-input" id="chat-input" rows="1" placeholder="Tell the Thinking Partner what you tried..."
-            onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
-          <button class="mic-btn" id="mic-btn" onclick="toggleDictation()" title="Dictate">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
-              <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-              <line x1="12" y1="19" x2="12" y2="23"></line>
-              <line x1="8" y1="23" x2="16" y2="23"></line>
-            </svg>
+      <!-- CHAT -->
+      <div class="chat-area">
+        <div class="chat-msgs" id="chat-msgs">
+          <!-- Messages injected here -->
+        </div>
+        <div class="typing" id="typing">
+          <div style="font-size:11px;font-weight:600;color:var(--accent);margin-bottom:3px">Thinking Partner</div>
+          <div class="typing-dots">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+          </div>
+        </div>
+
+        <!-- INPUT -->
+        <div class="input-bar">
+          <div class="input-wrap">
+            <textarea class="chat-input" id="chat-input" rows="1" placeholder="Type your thinking..."
+              onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+            <button class="mic-btn" id="mic-btn" onclick="toggleDictation()" title="Dictate">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                <line x1="12" y1="19" x2="12" y2="23"></line>
+                <line x1="8" y1="23" x2="16" y2="23"></line>
+              </svg>
+            </button>
+            <button class="eq-btn" onclick="openEq()" title="Insert equation">∑</button>
+          </div>
+          <button class="send-btn" id="send-btn" onclick="sendMsg()" title="Send">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
           </button>
-          <button class="eq-btn" onclick="openEq()" title="Insert equation">∑</button>
         </div>
-        <button class="send-btn" id="send-btn" onclick="sendMsg()" title="Send">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
-        </button>
-      </div>
 
-      <!-- DOWNLOAD -->
-      <div class="download-bar">
-        <div class="download-note">When finished, download your transcript and submit to Ms. Ramesh.</div>
-        <button class="download-btn" onclick="downloadTranscript()">Download transcript</button>
+        <!-- ACTION BAR -->
+        <div class="action-bar" id="action-bar">
+          <div class="action-note">When ready, move to the next problem.</div>
+          <button class="next-btn" onclick="nextProblem()">Next problem</button>
+        </div>
       </div>
     </div>
   </div>
@@ -357,56 +378,81 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text-p
 const API_URL = '/api/chat';
 const MODEL = 'claude-sonnet-4-20250514';
 
-const SYSTEM_PROMPT = `You are a thinking partner for a student working on a timed mathematics assessment at Phillips Exeter Academy.
+const SYSTEM_PROMPT = `You are a thinking partner for a student working on a timed mathematics quiz at Phillips Exeter Academy.
 
 CONTEXT:
-This is a 10-minute problem-solving session. The student has already attempted the problem independently. Your role is to help them think through their reasoning, not to solve it for them.
-
-THE PROBLEM THE STUDENT IS WORKING ON:
-Alex the geologist is in the desert, 6 km from a long straight road. Alex's jeep travels at 48 kph on the road and 20 kph across the desert. There is a supply depot on the road, 16 km from the nearest point N on the road to Alex's position.
-1. Let x be the distance (in km) along the road from N to the point where Alex joins the road. Write an expression for the total travel time, in hours.
-2. Compute the time if Alex drives straight to N then along the road and the time driving entirely through the desert to the depot.
-3. Alex claims there is a value between 0 and 16 that gives a shorter total time. Without solving for the exact minimum, give a convincing mathematical argument that such a value must exist.
-4. Pose one meaningful follow-up question this problem makes you wonder about.
+This is a multi-problem quiz. The student has already read each problem. Your role is to help them think through their reasoning, not to solve it for them.
 
 RULE 0 — ALWAYS ASK FIRST:
-Your first response must ask: "What did you try on your own, and where exactly did you get stuck?"
+Your first response for each problem must ask: "What did you try on your own, and where exactly did you get stuck?"
 
-AFTER THAT — RESPONSIVE DIALOGUE:
-This is a conversation, not an interrogation. The student may:
-- Ask you questions (answer them, but don't give away the solution)
-- Share their reasoning (respond to what they said, don't just ask another question)
-- Request clarification on concepts (explain clearly and concisely)
-- Test an idea with you (give feedback on their thinking)
+CRITICAL — NEVER GIVE PROCEDURAL INSTRUCTIONS:
+Do NOT tell the student what to calculate, what formula to use, or what steps to follow. Do NOT say "find the slope" or "use the distance formula" or "set up an equation." Those are procedural instructions. You point to concrete actions (draw, write, test), not mathematical procedures.
+
+HARKNESS PROBLEM-SOLVING MOVES:
+When a student is stuck, suggest ONE of these concrete actions:
+- Draw a diagram or sketch the situation
+- Write out what you know and what you're looking for in plain words
+- Try it with simple numbers first
+- Look at a specific example
+- Work backwards from what you want
+- Test your thinking with a concrete case
+
+DO NOT suggest: "find X", "calculate Y", "use formula Z", "set up an equation". Those tell them the mathematical move. You help them see the problem, not execute the procedure.
+
+EXAMPLES OF GOOD RESPONSES:
+- Student: "I don't know where to begin" → "Draw it. Two points, a line, and the origin. What does closest mean?"
+- Student: "How do I find the slope?" → "What changes between those two points?"
+- Student: "What formula do I use?" → "What are you trying to measure?"
+
+EXAMPLES OF BAD RESPONSES (DO NOT DO THIS):
+- "Find the equation of the line"
+- "Calculate the slope using rise over run"
+- "Use the distance formula"
+- "Set up a system of equations"
 
 WHAT TO DO:
-- Match your response to what the student just did
-- If they ask a question, answer it (without solving the problem for them)
-- If they share reasoning, respond to it (confirm, extend, or probe gently)
-- If they're stuck, offer a concrete next step to consider
-- Vary your response types: sometimes explain, sometimes ask, sometimes affirm
-- Keep responses concise (2-3 sentences max in most cases)
+- Keep responses to 1 sentence
+- Point to what they can SEE or DO physically (draw, write, test)
+- Ask about meaning, not procedure ("what does closest mean?" not "how do you calculate distance?")
+- If they ask "how?", redirect to "what are you trying to figure out?"
 
 WHAT NOT TO DO:
-- Don't ask a question after every student response
-- Don't lead them through a predetermined sequence
-- Don't solve the problem or give the answer
-- Don't let wrong facts or logic errors pass uncorrected
-- Don't give up if they say "I don't know" — offer a concrete angle
+- Don't name the mathematical procedure
+- Don't give formulas
+- Don't say "find X" or "calculate Y"
+- Don't ask a question after every response
 
 TIME PRESSURE:
-Students have 10 minutes total. Be efficient. If they're spinning, give them a foothold. If they're moving forward, get out of the way.
+Students have limited time. One sentence. One concrete action or question.
 
 TONE:
-Direct, warm, efficient. Like a peer who knows math but respects their thinking.`;
+Brief, direct, peer-level.`;
+
+// ── PROBLEMS ──
+const PROBLEMS = [
+  {
+    label: 'Problem 1 of 3 · Problem 131',
+    text: '<p><em>A line goes through the points (2, 5) and (6, −1). Let P be the point on this line that is closest to the origin. Calculate the coordinates of P.</em></p>'
+  },
+  {
+    label: 'Problem 2 of 3 · Problem 134',
+    text: '<p><em>Given that P = (−1, −1), Q = (4, 3), A = (1, 2), and B = (7, k), find the value of k that makes the line AB <strong>(a)</strong> parallel to line PQ; <strong>(b)</strong> perpendicular to line PQ.</em></p>'
+  },
+  {
+    label: 'Problem 3 of 3 · Problem 136',
+    text: '<p><em>Ashley saved a distance equal to 80% of the length of the shortest side of a rectangular field by cutting across the diagonal of the field instead of along two of the sides. Find the ratio of the length of the shortest side to the length of the longest.</em></p>'
+  }
+];
 
 // ── STATE ──
 let studentName = '';
-let msgs = [];
-let problemVisible = true;
+let currentProblem = 0;
+let allMessages = []; // Store all messages across all problems
+let currentMessages = []; // Messages for current problem only
 
 // ── START ──
-function startAssessment() {
+function startQuiz() {
   const input = document.getElementById('name-input');
   const name = input.value.trim();
   if (!name) { input.focus(); return; }
@@ -415,10 +461,59 @@ function startAssessment() {
   document.getElementById('topbar-name').textContent = name;
   document.getElementById('topbar-name').style.display = 'inline';
   document.getElementById('screen-welcome').classList.remove('active');
-  document.getElementById('screen-assess').classList.add('active');
+  document.getElementById('screen-quiz').classList.add('active');
 
-  // Thinking Partner greeting
-  addMessage('assistant', 'Hey ' + name.split(' ')[0] + '. Take a look at the problem above. Before we dig in — what did you try on your own, and where exactly did you get stuck?');
+  loadProblem(0);
+}
+
+function loadProblem(index) {
+  currentProblem = index;
+  currentMessages = [];
+  
+  // Update problem display
+  document.getElementById('problem-label').textContent = PROBLEMS[index].label;
+  document.getElementById('problem-text').innerHTML = PROBLEMS[index].text;
+  
+  // Clear chat
+  document.getElementById('chat-msgs').innerHTML = '';
+  
+  // Add greeting
+  addMessage('assistant', 'Hey ' + studentName.split(' ')[0] + '. Take a look at the problem. What did you try on your own, and where exactly did you get stuck?');
+  
+  // Update action bar
+  const actionBar = document.getElementById('action-bar');
+  let leftBtn = '';
+  let rightBtn = '';
+  let note = '';
+  
+  if (index > 0) {
+    leftBtn = '<button class="next-btn" onclick="previousProblem()">← Previous problem</button>';
+  }
+  
+  if (index === 2) {
+    note = 'When finished, download your full transcript.';
+    rightBtn = '<button class="download-btn" onclick="downloadTranscript()">Download transcript</button>';
+  } else {
+    note = 'When ready, move to the next problem.';
+    rightBtn = '<button class="next-btn" onclick="nextProblem()">Next problem →</button>';
+  }
+  
+  actionBar.innerHTML = '<div style="display:flex;gap:12px">' + leftBtn + '</div><div class="action-note">' + note + '</div><div style="display:flex;gap:12px">' + rightBtn + '</div>';
+  
+  // Focus input
+  document.getElementById('chat-input').focus();
+}
+
+function nextProblem() {
+  if (currentProblem < 2) {
+    loadProblem(currentProblem + 1);
+  }
+}
+
+function previousProblem() {
+  if (currentProblem > 0) {
+    loadProblem(currentProblem - 1);
+  }
 }
 
 // ── CHAT ──
@@ -436,7 +531,8 @@ function addMessage(role, text) {
     '</div>' +
     '<div class="msg-bubble ' + (isK ? 'msg-bubble-k' : 'msg-bubble-s') + '">' + escapeHtml(text) + '</div>';
   container.appendChild(div);
-  // Render math in the new message
+  
+  // Render math
   renderMathInElement(div, {
     delimiters: [
       { left: '$$', right: '$$', display: true },
@@ -447,6 +543,10 @@ function addMessage(role, text) {
     throwOnError: false
   });
   container.scrollTop = container.scrollHeight;
+  
+  // Store message
+  currentMessages.push({ role, content: text });
+  allMessages.push({ problem: currentProblem + 1, role, content: text });
 }
 
 async function sendMsg() {
@@ -454,51 +554,50 @@ async function sendMsg() {
   const text = input.value.trim();
   if (!text) return;
 
+  // Add user message
+  addMessage('user', text);
   input.value = '';
   autoResize(input);
 
-  addMessage('user', text);
-  msgs.push({ role: 'user', content: text });
-
   // Show typing
-  document.getElementById('typing').classList.add('vis');
+  document.getElementById('typing').style.display = 'block';
   document.getElementById('send-btn').disabled = true;
 
   try {
-    const res = await fetch(API_URL, {
+    const response = await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: MODEL,
-        max_tokens: 500,
-        system: SYSTEM_PROMPT,
-        messages: msgs
+        max_tokens: 1000,
+        system: SYSTEM_PROMPT + '\n\nCURRENT PROBLEM:\n' + PROBLEMS[currentProblem].text.replace(/<[^>]*>/g, ''),
+        messages: currentMessages
       })
     });
 
-    const data = await res.json();
+    if (!response.ok) throw new Error('API error');
+    const data = await response.json();
+    const reply = data.content[0].text;
 
-    if (data.error) {
-      addMessage('assistant', 'Connection issue — please try again.');
-      msgs.pop();
-    } else {
-      const reply = data.content?.[0]?.text || 'Connection issue — please try again.';
-      msgs.push({ role: 'assistant', content: reply });
-      addMessage('assistant', reply);
-    }
+    // Hide typing and add response
+    document.getElementById('typing').style.display = 'none';
+    addMessage('assistant', reply);
+
   } catch (err) {
-    addMessage('assistant', 'Connection issue — please try again.');
-    msgs.pop();
+    document.getElementById('typing').style.display = 'none';
+    addMessage('assistant', 'Sorry, something went wrong. Please try again.');
+    console.error(err);
+  } finally {
+    document.getElementById('send-btn').disabled = false;
+    input.focus();
   }
-
-  document.getElementById('typing').classList.remove('vis');
-  document.getElementById('send-btn').disabled = false;
-  input.focus();
 }
 
-// ── INPUT HELPERS ──
 function handleKey(e) {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); }
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMsg();
+  }
 }
 
 function autoResize(el) {
@@ -506,27 +605,13 @@ function autoResize(el) {
   el.style.height = Math.min(el.scrollHeight, 120) + 'px';
 }
 
-function escapeHtml(s) {
-  return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
 }
 
-// ── PROBLEM TOGGLE ──
-function toggleProblem() {
-  const panel = document.getElementById('problem-panel');
-  const toggle = panel.querySelector('.problem-toggle');
-  problemVisible = !problemVisible;
-  if (problemVisible) {
-    panel.style.maxHeight = '45vh';
-    toggle.textContent = '▴ Hide problem';
-    panel.querySelectorAll('.problem-text, .problem-diagram').forEach(el => el.style.display = '');
-  } else {
-    panel.style.maxHeight = '48px';
-    toggle.textContent = '▾ Show problem';
-    panel.querySelectorAll('.problem-text').forEach(el => el.style.display = 'none');
-  }
-}
-
-// ── EQUATION MODAL ──
+// ── EQUATION EDITOR ──
 function openEq() {
   document.getElementById('eq-overlay').classList.add('open');
   const field = document.getElementById('eq-field');
@@ -535,66 +620,55 @@ function openEq() {
 
 function closeEq() {
   document.getElementById('eq-overlay').classList.remove('open');
-  const field = document.getElementById('eq-field');
-  if (typeof mathVirtualKeyboard !== 'undefined') {
-    try { mathVirtualKeyboard.visible = false; } catch(e) {}
-  }
-  field.value = '';
+  document.getElementById('eq-field').value = '';
 }
 
 function insertEq() {
   const field = document.getElementById('eq-field');
-  const latex = field.value;
-  if (!latex) { closeEq(); return; }
-  const ta = document.getElementById('chat-input');
-  ta.value = (ta.value ? ta.value + ' ' : '') + '$$' + latex + '$$';
-  autoResize(ta);
+  const latex = field.getValue();
+  if (latex) {
+    const input = document.getElementById('chat-input');
+    input.value += ' $$' + latex + '$$ ';
+    autoResize(input);
+  }
   closeEq();
-  ta.focus();
+  document.getElementById('chat-input').focus();
 }
 
-// Enter on math field inserts
-setTimeout(() => {
-  const mf = document.getElementById('eq-field');
-  if (mf) {
-    mf.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') { e.preventDefault(); insertEq(); }
-    });
-  }
-}, 600);
-
-// ── TRANSCRIPT DOWNLOAD ──
+// ── TRANSCRIPT ──
 function downloadTranscript() {
   const lines = [];
-  lines.push('Phillips Exeter Academy — MAT 210 Test 2 · Part II');
+  lines.push('Phillips Exeter Academy — Mathematics Quiz');
   lines.push('Student: ' + studentName);
   lines.push('Date: ' + new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }));
-  lines.push('Time: ' + new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }));
+  lines.push('Time: ' + new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }));
   lines.push('');
   lines.push('═'.repeat(60));
-  lines.push('PROBLEM: Alex the Geologist');
-  lines.push('═'.repeat(60));
-  lines.push('');
-
-  // Include all messages
-  const allMsgs = [{ role: 'assistant', content: 'Hey ' + studentName.split(' ')[0] + '. Take a look at the problem above. Before we dig in — what did you try on your own, and where exactly did you get stuck?' }, ...msgs];
-
-  allMsgs.forEach(m => {
+  
+  let currentProb = 0;
+  allMessages.forEach(m => {
+    if (m.problem !== currentProb) {
+      currentProb = m.problem;
+      lines.push('');
+      lines.push('═'.repeat(60));
+      lines.push('PROBLEM ' + currentProb + ': ' + PROBLEMS[currentProb - 1].label);
+      lines.push('═'.repeat(60));
+      lines.push('');
+    }
     const role = m.role === 'assistant' ? '[THINKING PARTNER]' : '[' + studentName.toUpperCase() + ']';
     lines.push(role);
-    lines.push(typeof m.content === 'string' ? m.content : '[media]');
+    lines.push(m.content);
     lines.push('');
   });
-
+  
   lines.push('═'.repeat(60));
   lines.push('End of transcript');
-  lines.push('Questions exchanged: ' + msgs.filter(m => m.role === 'user').length);
 
   const blob = new Blob([lines.join('\n')], { type: 'text/plain' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'mat210-test2-' + studentName.replace(/\s+/g, '-').toLowerCase() + '.txt';
+  a.download = 'math-quiz-' + studentName.replace(/\s+/g, '-').toLowerCase() + '.txt';
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
